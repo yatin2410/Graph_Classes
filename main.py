@@ -32,22 +32,24 @@ class Graph:
             return False
 
 #Driver code
-gr = Graph()
-tmp = input('Is Graph Undirected (Y/n)?: ')
-if tmp == 'n':
-    gr.changeDirected()
+graph = Graph()
+
+isUndirected = input('Is Graph Undirected (y/n)?: ')
+
+if isUndirected == 'n':
+    graph.changeDirected()
 
 nodes = int(input('Enter total number of nodes: '))
 edges = int(input('Enter total number of edges: '))
-gr.setNodes(nodes)
-gr.setEdges(edges)
+graph.setNodes(nodes)
+graph.setEdges(edges)
 
 for i in range(0,edges):
     u,v = input('Enter edge nodes u and v: ').split(" ")
     u = int(u)
     v = int(v)
-    gr.addEdge(u,v)
+    graph.addEdge(u,v)
 
-print(gr.isEdgeLessGraph())
+print('isEdgeLessGraph : ' , graph.isEdgeLessGraph())
 
 print("---------DONE------------")
