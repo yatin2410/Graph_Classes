@@ -108,6 +108,34 @@ class Graph:
         else:
             return False
 
+    def ConnectedDFS(self,visited,node):
+        visited[node] = True
+        for u in self.graph[node]:
+            if visited[u] == False:
+                self.ConnectedDFS(visited,u)
+
+
+    def isConnectedGraph(self):
+        if self.directed == True:
+            return False
+        visited = [False]*(self.nodes+1)
+        self.ConnectedDFS(visited,1)
+        for i in range(1,self.nodes+1):
+            if visited[i] == False:
+                return False
+        return True
+
+    def isStronglyConnectedGraph(self):
+        if self.directed == False:
+            return False
+        visited = [False]*(self.nodes+1)
+        self.ConnectedDFS(visited,1)
+        for i in range(1,self.nodes+1):
+            if visited[i] == False:
+                return False
+        return True
+
+
 #Driver code
 graph = Graph()
 
@@ -131,9 +159,11 @@ for i in range(0,edges):
         continue     
     graph.addEdge(u,v)
 
-print('isSimpleGraph : ' , graph.isSimpleGraph())
+print('isSimpleGraph : ' , graph.isSimpleGraph(),'\n')
 print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
 print('isRegularGraph : ' , graph.isRegularGraph(),'\n')
 print('isBipartedGraph : ',graph.isBipartedGraph(),'\n')
+print('isConnectedGraph : ',graph.isConnectedGraph(),'\n')
+print('isStronglyConnectedGraph : ',graph.isStronglyConnectedGraph(),'\n')
 
 print("---------DONE------------")
