@@ -4,7 +4,7 @@ from collections import defaultdict
 class Graph:
     
     def __init__(self):
-        self.graph = defaultdict(list)
+        self.graphList = defaultdict(list)
         self.directed = False
         self.nodes = 0
         self.edges = 0
@@ -20,10 +20,10 @@ class Graph:
 
     def addEdge(self,u,v):
         if self.directed == False:
-            self.graph[u].append(v)
-            self.graph[v].append(u)
+            self.graphList[u].append(v)
+            self.graphList[v].append(u)
         else:
-            self.graph[u].append(v)
+            self.graphList[u].append(v)
 
     def isEdgeLessGraph(self):
         if edges == 0:
@@ -33,7 +33,7 @@ class Graph:
 
     def isCycleUtil(self, node, visited, parent):
         visited[node] = True
-        for adj in self.graph[node]:
+        for adj in self.graphList[node]:
             if visited[adj] == False:
                 if self.isCycleUtil(adj, visited, node) == True:
                     return True
@@ -64,23 +64,23 @@ class Graph:
 
         if self.directed == False:
             for i in range(2,nodes+1):
-                if len(self.graph[i-1]) != len(self.graph[i]):
+                if len(self.graphList[i-1]) != len(self.graphList[i]):
                     isDegreeSame = False
                     return Degree
 
-            Degree = len(self.graph[1])
+            Degree = len(self.graphList[1])
             if isDegreeSame == True and wantToPrint:
                 print(Degree , '- Regular Graph')
         else:
             for i in range(2,nodes+1):
-                if len(self.graph[i-1]) != len(self.graph[i]):
+                if len(self.graphList[i-1]) != len(self.graphList[i]):
                     isDegreeSame = False
                     return Degree
 
             inDegrees = [0]*(self.nodes+1)
             for i in range(1,nodes+1):
-                for j in range(0,len(self.graph[i])):
-                    inDegrees[self.graph[i][j]] += 1
+                for j in range(0,len(self.graphList[i])):
+                    inDegrees[self.graphList[i][j]] += 1
 
             for i in range(2,nodes+1):
                 if inDegrees[i-1] != inDegrees[i]:
@@ -88,7 +88,7 @@ class Graph:
                     return Degree 
 
             inDegree = inDegrees[1]
-            outDegree = len(self.graph[1])
+            outDegree = len(self.graphList[1])
             Degree = inDegree + outDegree      
                             
             if isDegreeSame == True  and wantToPrint:
@@ -111,16 +111,16 @@ class Graph:
         lemmda = -1
 
         for i in range(1,nodes+1):
-            for j in self.graph[i]:
+            for j in self.graphList[i]:
                 if (i,j) in edgeSet:
                     edgeSet.remove((i,j))
                     Set1 = set()
                     Set2 = set()
                     Set1.clear()
                     Set2.clear()
-                    for k in self.graph[i]:
+                    for k in self.graphList[i]:
                         Set1.add(k)
-                    for k in self.graph[j]:
+                    for k in self.graphList[j]:
                         Set2.add(k)
 
                     Set1 = Set1.intersection(Set2)
@@ -156,7 +156,7 @@ class Graph:
             return False
 
     def BipartedDFS(self,node,visited,color):
-        for u in self.graph[node]:
+        for u in self.graphList[node]:
             if visited[u] == False:
                 visited[u] = True
                 color[u] = 1 - color[node]
@@ -177,10 +177,12 @@ class Graph:
             return False
 
     def isCycleGraph(self):
+        if self.isConnectedGraph() == False:
+            return False
         if self.nodes != self.edges:
             return False
         for i in range(1, self.nodes+1):
-            if len(self.graph[i]) != 2:
+            if len(self.graphList[i]) != 2:
                 return False 
         return True
 
@@ -188,9 +190,9 @@ class Graph:
         nodeCount = 0
         CenterNodeCount = 0
         for i in range(1,self.nodes+1):
-            if len(self.graph[i]) == e:
+            if len(self.graphList[i]) == e:
                 nodeCount += 1
-            elif len(self.graph[i]) == self.nodes-1:
+            elif len(self.graphList[i]) == self.nodes-1:
                 CenterNodeCount += 1
         if nodeCount == self.nodes-1 and CenterNodeCount == 1:
             return True
@@ -204,7 +206,7 @@ class Graph:
 
     def isCompleteGraph(self):
         for i in range(1,self.nodes+1):
-            if len(self.graph[i]) != self.nodes-1:
+            if len(self.graphList[i]) != self.nodes-1:
                 return False
         return True
 
@@ -216,7 +218,7 @@ class Graph:
           
     def ConnectedDFS(self,visited,node):
         visited[node] = True
-        for u in self.graph[node]:
+        for u in self.graphList[node]:
             if visited[u] == False:
                 self.ConnectedDFS(visited,u)
 
