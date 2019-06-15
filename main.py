@@ -146,6 +146,32 @@ class Graph:
             return False
         else:
             return True
+          
+    def ConnectedDFS(self,visited,node):
+        visited[node] = True
+        for u in self.graph[node]:
+            if visited[u] == False:
+                self.ConnectedDFS(visited,u)
+
+    def isConnectedGraph(self):
+        if self.directed == True:
+            return False
+        visited = [False]*(self.nodes+1)
+        self.ConnectedDFS(visited,1)
+        for i in range(1,self.nodes+1):
+            if visited[i] == False:
+                return False
+        return True
+
+    def isStronglyConnectedGraph(self):
+        if self.directed == False:
+            return False
+        visited = [False]*(self.nodes+1)
+        self.ConnectedDFS(visited,1)
+        for i in range(1,self.nodes+1):
+            if visited[i] == False:
+                return False
+        return True
 
 #Driver code
 graph = Graph()
@@ -180,5 +206,7 @@ print('isWheelGraph : ' , graph.isWheelGraph(),'\n')
 print('isStarGraph : ' , graph.isStarGraph(),'\n')
 print('isCompleteGraph : ' , graph.isCompleteGraph(),'\n')
 print('isCyclicGraph : ' , graph.isCyclicGraph(),'\n')
+print('isConnectedGraph : ',graph.isConnectedGraph(),'\n')
+print('isStronglyConnectedGraph : ',graph.isStronglyConnectedGraph(),'\n')
 
 print("---------DONE------------")
