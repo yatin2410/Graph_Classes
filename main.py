@@ -31,6 +31,47 @@ class Graph:
         else:
             return False
 
+    def isRegularGraph(self):
+        isDegreeSame = True
+
+        if self.directed == False:
+
+            for i in range(2,nodes+1):
+                if len(self.graph[i-1]) != len(self.graph[i]):
+                    isDegreeSame = False
+                    return isDegreeSame
+
+            if isDegreeSame == True:
+                print(len(self.graph[1]) , '- Regular Graph')
+
+        else:
+            for i in range(2,nodes+1):
+                if len(self.graph[i-1]) != len(self.graph[i]):
+                    isDegreeSame = False
+                    return isDegreeSame
+
+            inDegrees = [0]*(self.nodes+1)
+            for i in range(1,nodes+1):
+                for j in range(0,len(self.graph[i])):
+                    inDegrees[self.graph[i][j]] += 1
+
+            for i in range(2,nodes+1):
+                if inDegrees[i-1] != inDegrees[i]:
+                    isDegreeSame = False
+                    return isDegreeSame                       
+
+            if isDegreeSame == True:
+                inDegree = inDegrees[1]
+                outDegree = len(self.graph[1])
+
+                print(inDegree + outDegree , '- Regular Graph')
+                print('InDegree : ', inDegree)
+                print('OutDegree : ', outDegree)
+
+        return isDegreeSame
+
+
+
 #Driver code
 graph = Graph()
 
@@ -50,6 +91,7 @@ for i in range(0,edges):
     v = int(v)
     graph.addEdge(u,v)
 
-print('isEdgeLessGraph : ' , graph.isEdgeLessGraph())
+print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
+print('isRegularGraph : ' , graph.isRegularGraph(),'\n')
 
 print("---------DONE------------")
