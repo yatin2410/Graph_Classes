@@ -58,35 +58,102 @@ class Graph:
     def isMultiGraph(self):
         return True;
           
-    def isRegularGraph(self):
+    def isRegularGraph(self,wantToPrint):
         isDegreeSame = True
+        Degree = -1
+
         if self.directed == False:
             for i in range(2,nodes+1):
                 if len(self.graph[i-1]) != len(self.graph[i]):
                     isDegreeSame = False
-                    return isDegreeSame
-            if isDegreeSame == True:
-                print(len(self.graph[1]) , '- Regular Graph')
+                    return Degree
+
+            Degree = len(self.graph[1])
+            if isDegreeSame == True and wantToPrint:
+                print(Degree , '- Regular Graph')
         else:
             for i in range(2,nodes+1):
                 if len(self.graph[i-1]) != len(self.graph[i]):
                     isDegreeSame = False
-                    return isDegreeSame
+                    return Degree
+
             inDegrees = [0]*(self.nodes+1)
             for i in range(1,nodes+1):
                 for j in range(0,len(self.graph[i])):
                     inDegrees[self.graph[i][j]] += 1
+
             for i in range(2,nodes+1):
                 if inDegrees[i-1] != inDegrees[i]:
                     isDegreeSame = False
-                    return isDegreeSame                       
-            if isDegreeSame == True:
-                inDegree = inDegrees[1]
-                outDegree = len(self.graph[1])
-                print(inDegree + outDegree , '- Regular Graph')
+                    return Degree 
+
+            inDegree = inDegrees[1]
+            outDegree = len(self.graph[1])
+            Degree = inDegree + outDegree      
+                            
+            if isDegreeSame == True  and wantToPrint:
+                print(Degree, '- Regular Graph')
                 print('InDegree : ', inDegree)
                 print('OutDegree : ', outDegree)
-        return isDegreeSame
+        return Degree
+
+    def isStronglyRegularGraph(self,wantToPrint):
+        Degree = self.isRegularGraph(False)
+        if Degree == -1:
+            return False
+
+        edgeSet = set()
+
+        for i in range(1,nodes+1):
+            for j in range(i+1,nodes+1):
+                edgeSet.add((i,j))
+
+        lemmda = -1
+
+        for i in range(1,nodes+1):
+            for j in self.graph[i]:
+                if (i,j) in edgeSet:
+                    edgeSet.remove((i,j))
+                    Set1 = set()
+                    Set2 = set()
+                    Set1.clear()
+                    Set2.clear()
+                    for k in self.graph[i]:
+                        Set1.add(k)
+                    for k in self.graph[j]:
+                        Set2.add(k)
+
+                    Set1 = Set1.intersection(Set2)
+
+                    if lemmda == -1:
+                        lemmda = len(Set1)
+                    elif lemmda != len(Set1):
+                        return False
+
+        MU = -1
+        rightTerm = Degree * (Degree - lemmda - 1)
+        leftTerm = (nodes - Degree - 1)
+
+        if nodes == 1 or lemmda == -1 or leftTerm == 0:
+            return False
+
+        if rightTerm % leftTerm == 0:
+            MU = rightTerm / leftTerm
+            if wantToPrint:
+                print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
+            return True
+        else:
+            return False
+
+
+
+    def isCubicGraph(self):
+        Degree = self.isRegularGraph(False)
+
+        if Degree == 3:
+            return True
+        else:
+            return False
 
     def BipartedDFS(self,node,visited,color):
         for u in self.graph[node]:
@@ -199,7 +266,14 @@ for i in range(0,edges):
 print('isSimpleGraph : ' , graph.isSimpleGraph(),'\n')
 print('isMultiGraph : ',graph.isMultiGraph(),'\n')
 print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
-print('isRegularGraph : ' , graph.isRegularGraph(),'\n')
+
+if graph.isRegularGraph(True) == -1:
+    print('isRegularGraph : False\n')
+else:
+    print('isRegularGraph : True\n')        
+
+print('isStronglyRegularGraph : ' , graph.isStronglyRegularGraph(True),'\n')
+print('isCubicGraph : ' , graph.isCubicGraph(),'\n')
 print('isBipartedGraph : ',graph.isBipartedGraph(),'\n')
 print('isCycleGraph : ' , graph.isCycleGraph(),'\n')
 print('isWheelGraph : ' , graph.isWheelGraph(),'\n')
