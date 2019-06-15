@@ -56,6 +56,57 @@ class Graph:
             return False
         else:
             return True
+          
+    def isRegularGraph(self):
+        isDegreeSame = True
+        if self.directed == False:
+            for i in range(2,nodes+1):
+                if len(self.graph[i-1]) != len(self.graph[i]):
+                    isDegreeSame = False
+                    return isDegreeSame
+            if isDegreeSame == True:
+                print(len(self.graph[1]) , '- Regular Graph')
+        else:
+            for i in range(2,nodes+1):
+                if len(self.graph[i-1]) != len(self.graph[i]):
+                    isDegreeSame = False
+                    return isDegreeSame
+            inDegrees = [0]*(self.nodes+1)
+            for i in range(1,nodes+1):
+                for j in range(0,len(self.graph[i])):
+                    inDegrees[self.graph[i][j]] += 1
+            for i in range(2,nodes+1):
+                if inDegrees[i-1] != inDegrees[i]:
+                    isDegreeSame = False
+                    return isDegreeSame                       
+            if isDegreeSame == True:
+                inDegree = inDegrees[1]
+                outDegree = len(self.graph[1])
+                print(inDegree + outDegree , '- Regular Graph')
+                print('InDegree : ', inDegree)
+                print('OutDegree : ', outDegree)
+        return isDegreeSame
+
+    def BipartedDFS(self,node,visited,color):
+        for u in self.graph[node]:
+            if visited[u] == False:
+                visited[u] = True
+                color[u] = 1 - color[node]
+                if self.BipartedDFS(u,visited,color)==False:
+                    return False
+            elif color[u]==color[node]:
+                return False
+        return True
+
+    def isBipartedGraph(self):
+        visited = [False]*(self.nodes+1)
+        color = [False]*(self.nodes+1)
+        visited[1] = True
+        color[1] = 0
+        if self.BipartedDFS(1,visited,color):
+            return True
+        else:
+            return False
 
 #Driver code
 graph = Graph()
@@ -80,7 +131,9 @@ for i in range(0,edges):
         continue     
     graph.addEdge(u,v)
 
-print('isEdgeLessGraph : ' , graph.isEdgeLessGraph())
 print('isSimpleGraph : ' , graph.isSimpleGraph())
+print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
+print('isRegularGraph : ' , graph.isRegularGraph(),'\n')
+print('isBipartedGraph : ',graph.isBipartedGraph(),'\n')
 
 print("---------DONE------------")
