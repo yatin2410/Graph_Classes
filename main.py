@@ -33,10 +33,8 @@ class Graph:
 
     def isCycleUtil(self, node, visited, parent):
         visited[node] = True
-        print('p', node)
         for adj in self.graph[node]:
             if visited[adj] == False:
-                print('c', adj)
                 if self.isCycleUtil(adj, visited, node) == True:
                     return True
             elif parent != adj:
@@ -56,6 +54,9 @@ class Graph:
             return False
         else:
             return True
+
+    def isMultiGraph(self):
+        return True;
           
     def isRegularGraph(self):
         isDegreeSame = True
@@ -108,6 +109,44 @@ class Graph:
         else:
             return False
 
+    def isCycleGraph(self):
+        if self.nodes != self.edges:
+            return False
+        for i in range(1, self.nodes+1):
+            if len(self.graph[i]) != 2:
+                return False 
+        return True
+
+    def isWheelorStarGraph(self, e):
+        nodeCount = 0
+        CenterNodeCount = 0
+        for i in range(1,self.nodes+1):
+            if len(self.graph[i]) == e:
+                nodeCount += 1
+            elif len(self.graph[i]) == self.nodes-1:
+                CenterNodeCount += 1
+        if nodeCount == self.nodes-1 and CenterNodeCount == 1:
+            return True
+        return False 
+
+    def isWheelGraph(self):
+        return self.isWheelorStarGraph(3) 
+
+    def isStarGraph(self):
+        return self.isWheelorStarGraph(1)
+
+    def isCompleteGraph(self):
+        for i in range(1,self.nodes+1):
+            if len(self.graph[i]) != self.nodes-1:
+                return False
+        return True
+
+    def isCyclicGraph(self):
+        if self.isSimpleGraph() == True:
+            return False
+        else:
+            return True
+
 #Driver code
 graph = Graph()
 
@@ -131,9 +170,15 @@ for i in range(0,edges):
         continue     
     graph.addEdge(u,v)
 
-print('isSimpleGraph : ' , graph.isSimpleGraph())
+print('isSimpleGraph : ' , graph.isSimpleGraph(),'\n')
+print('isMultiGraph : ',graph.isMultiGraph(),'\n')
 print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
 print('isRegularGraph : ' , graph.isRegularGraph(),'\n')
 print('isBipartedGraph : ',graph.isBipartedGraph(),'\n')
+print('isCycleGraph : ' , graph.isCycleGraph(),'\n')
+print('isWheelGraph : ' , graph.isWheelGraph(),'\n')
+print('isStarGraph : ' , graph.isStarGraph(),'\n')
+print('isCompleteGraph : ' , graph.isCompleteGraph(),'\n')
+print('isCyclicGraph : ' , graph.isCyclicGraph(),'\n')
 
 print("---------DONE------------")
