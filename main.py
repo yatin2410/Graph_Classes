@@ -31,6 +31,32 @@ class Graph:
         else:
             return False
 
+    def isCycleUtil(self, node, visited, parent):
+        visited[node] = True
+        print('p', node)
+        for adj in self.graph[node]:
+            if visited[adj] == False:
+                print('c', adj)
+                if self.isCycleUtil(adj, visited, node) == True:
+                    return True
+            elif parent != adj:
+                return True
+        return False
+
+    def isCycle(self):
+        visited = [False]*(self.nodes+1)
+        for node in range(self.nodes):
+            if visited[node+1] == False:
+                if self.isCycleUtil(node+1, visited, -1) == True:
+                    return True
+        return False
+
+    def isSimpleGraph(self):
+        if self.isCycle() == True:
+            return False
+        else:
+            return True
+          
     def isRegularGraph(self):
         isDegreeSame = True
         if self.directed == False:
@@ -99,8 +125,13 @@ for i in range(0,edges):
     u,v = input('Enter edge nodes u and v: ').split(" ")
     u = int(u)
     v = int(v)
+    if u <= 0 or v <= 0 or u > nodes or v > nodes:
+        print("Invalid")
+        i = i-1
+        continue     
     graph.addEdge(u,v)
 
+print('isSimpleGraph : ' , graph.isSimpleGraph())
 print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
 print('isRegularGraph : ' , graph.isRegularGraph(),'\n')
 print('isBipartedGraph : ',graph.isBipartedGraph(),'\n')
