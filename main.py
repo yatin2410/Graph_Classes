@@ -280,6 +280,19 @@ class Graph:
             return True
         return False
 
+    def isRooksGraph(self):
+        Degree = self.isRegularGraph(False)
+        if Degree == -1:
+            return False
+        for i in range(1, self.nodes):
+            if i*i > self.nodes:
+                break
+            else:
+                if self.nodes%i == 0:
+                    if Degree == (i-1) + (self.nodes/i - 1):
+                        return True
+        return False
+        
 #Driver code
 graph = Graph()
 
@@ -324,6 +337,7 @@ print('isConnectedGraph : ',graph.isConnectedGraph(),'\n')
 print('isStronglyConnectedGraph : ',graph.isStronglyConnectedGraph(),'\n')
 print('isTreeGraph : ',graph.isTreeGraph(),'\n')
 print('isForestGraph : ',graph.isForestGraph(),'\n')
+print('isRooksGraph : ',graph.isRooksGraph(),'\n')
 print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 
 print("---------DONE------------")
