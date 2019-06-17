@@ -129,16 +129,21 @@ class Graph:
                         lemmda = len(Set1)
                     elif lemmda != len(Set1):
                         return False
-
+        
         MU = -1
         rightTerm = Degree * (Degree - lemmda - 1)
         leftTerm = (nodes - Degree - 1)
 
-        if nodes == 1 or lemmda == -1 or leftTerm == 0:
+        if nodes == 1 or lemmda == -1 or (rightTerm !=0 and leftTerm == 0):
             return False
 
-        if rightTerm % leftTerm == 0:
-            MU = rightTerm / leftTerm
+        if rightTerm == 0:
+            MU = 0
+            if wantToPrint:
+                print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
+            return True
+        elif rightTerm % leftTerm == 0:
+            MU = rightTerm // leftTerm
             if wantToPrint:
                 print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
             return True
@@ -215,7 +220,7 @@ class Graph:
         return True
 
     def isCyclicGraph(self):
-        return self.isCycle();
+        return self.isCycle()
           
     def ConnectedDFS(self,visited,node):
         visited[node] = True
