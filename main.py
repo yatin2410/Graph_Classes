@@ -1,4 +1,5 @@
 from collections import defaultdict
+from itertools import combinations 
 
 #class Graph
 class Graph:
@@ -129,21 +130,90 @@ class Graph:
                         lemmda = len(Set1)
                     elif lemmda != len(Set1):
                         return False
-
+        
         MU = -1
         rightTerm = Degree * (Degree - lemmda - 1)
         leftTerm = (nodes - Degree - 1)
 
-        if nodes == 1 or lemmda == -1 or leftTerm == 0:
+        if nodes == 1 or lemmda == -1 or (rightTerm !=0 and leftTerm == 0):
             return False
 
-        if rightTerm % leftTerm == 0:
-            MU = rightTerm / leftTerm
+        if rightTerm == 0:
+            MU = 0
+            if wantToPrint:
+                print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
+            return True
+        elif rightTerm % leftTerm == 0:
+            MU = rightTerm // leftTerm
             if wantToPrint:
                 print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
             return True
         else:
             return False
+
+    def isPathPossible(self,start,end,visited):
+        for u in self.graphList[start]:
+            if u == end:
+                return True
+            if visited[u] == False:
+                visited[u] = True
+                if self.isPathPossible(u,end,visited) == True:
+                    return True
+                visited[u] = False
+        return False
+
+    def isPlanarGraph(self):
+        node_array = []
+        for i in range(1,self.nodes+1):
+            node_array.append(i)
+
+        comb = list(combinations(node_array,5))
+
+        for i in list(comb):
+            Pair = list(combinations(i,2))
+
+            visited = [False]*(self.nodes+1)
+
+            for j in list(Pair):
+                visited[j[0]] = True
+                visited[j[1]] = True
+
+            isK5 = True
+            for j in list(Pair):
+                if self.isPathPossible(j[0],j[1],visited) == False:
+                    isK5 = False
+                    break
+            if isK5 == True:
+                return False
+
+        comb = list(combinations(node_array,6))
+        for i in list(comb):
+            j = list(combinations(i,3))
+            for Tuple in list(j):
+                otherTuple = []
+                for k in i:
+                    if k not in Tuple:
+                        otherTuple.append(k)
+                visited = [False]*(self.nodes+1)
+
+                for k1 in Tuple:
+                    for k2 in otherTuple:
+                        visited[k1] = True
+                        visited[k2] = True 
+
+                isK33 = True
+                for k1 in Tuple:
+                    for k2 in otherTuple:
+                        if self.isPathPossible(k1,k2,visited) == False:
+                            isK33 = False
+                            break
+                    if isK33 == False:
+                        break
+
+                if isK33 == True:
+                    return False
+        return True
+
 
 
 
@@ -359,5 +429,6 @@ print('isForestGraph : ',graph.isForestGraph(),'\n')
 print('isRooksGraph : ',graph.isRooksGraph(),'\n')
 print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
+print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
 
 print("---------DONE------------")
