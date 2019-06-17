@@ -56,7 +56,7 @@ class Graph:
             return True
 
     def isMultiGraph(self):
-        return True;
+        return True
           
     def isRegularGraph(self,wantToPrint):
         isDegreeSame = True
@@ -178,6 +178,33 @@ class Graph:
         else:
             return False
 
+    def isCompleteBipartedGraph(self):
+        if self.isConnectedGraph() == False:
+            return False
+        visited = [False]*(self.nodes+1)
+        color = [False]*(self.nodes+1)
+        visited[1] = True
+        color[1] = 0
+        if self.BipartedDFS(1,visited,color) == False:
+            return False
+        s1 = set()
+        s2 = set()
+        for i in range(1,self.nodes+1):
+            if color[i] == 0:
+                s1.add(i)
+            else:
+                s2.add(i)
+        len1 = len(s1)
+        len2 = len(s2)
+        for u in s1:
+            if len(self.graphList[u]) != len2:
+                return False
+        for u in s2:
+            if len(self.graphList[u]) != len1:
+                return False
+        return True
+        
+
     def isCycleGraph(self):
         if self.isConnectedGraph() == False:
             return False
@@ -215,7 +242,7 @@ class Graph:
         return True
 
     def isCyclicGraph(self):
-        return self.isCycle();
+        return self.isCycle()
           
     def ConnectedDFS(self,visited,node):
         visited[node] = True
@@ -297,5 +324,6 @@ print('isConnectedGraph : ',graph.isConnectedGraph(),'\n')
 print('isStronglyConnectedGraph : ',graph.isStronglyConnectedGraph(),'\n')
 print('isTreeGraph : ',graph.isTreeGraph(),'\n')
 print('isForestGraph : ',graph.isForestGraph(),'\n')
+print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 
 print("---------DONE------------")
