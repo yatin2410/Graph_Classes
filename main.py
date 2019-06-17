@@ -362,7 +362,26 @@ class Graph:
                     if Degree == (i-1) + (self.nodes/i - 1):
                         return True
         return False
-        
+
+    def isThresholdGraph(self):
+        DegreeList = []
+        for i in range(1, self.nodes+1):
+            DegreeList.append(len(self.graphList[i]))
+        DominatingNodeDegree = self.nodes-1
+        IsolatedNodeDegree = 0
+        while len(DegreeList) > 1:
+            if DegreeList.count(DominatingNodeDegree) > 0 and DegreeList.count(IsolatedNodeDegree) == 0:
+                DegreeList.remove(DominatingNodeDegree)
+                IsolatedNodeDegree += 1
+            elif DegreeList.count(DominatingNodeDegree) == 0 and DegreeList.count(IsolatedNodeDegree) > 0:
+                DegreeList.remove(IsolatedNodeDegree)
+                DominatingNodeDegree -= 1
+            else:
+                return False 
+        if DegreeList.count(IsolatedNodeDegree) != DegreeList.count(DominatingNodeDegree):
+            return False
+        return True
+
 #Driver code
 graph = Graph()
 
@@ -409,6 +428,7 @@ print('isTreeGraph : ',graph.isTreeGraph(),'\n')
 print('isForestGraph : ',graph.isForestGraph(),'\n')
 print('isRooksGraph : ',graph.isRooksGraph(),'\n')
 print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
+print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
 print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
 
 print("---------DONE------------")
