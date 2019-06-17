@@ -167,6 +167,8 @@ class Graph:
         return True
 
     def isBipartedGraph(self):
+        if self.isConnectedGraph() == False:
+            return False
         visited = [False]*(self.nodes+1)
         color = [False]*(self.nodes+1)
         visited[1] = True
@@ -187,6 +189,8 @@ class Graph:
         return True
 
     def isWheelorStarGraph(self, e):
+        if self.isConnectedGraph() == False:
+            return False
         nodeCount = 0
         CenterNodeCount = 0
         for i in range(1,self.nodes+1):
@@ -211,10 +215,7 @@ class Graph:
         return True
 
     def isCyclicGraph(self):
-        if self.isSimpleGraph() == True:
-            return False
-        else:
-            return True
+        return self.isCycle();
           
     def ConnectedDFS(self,visited,node):
         visited[node] = True
@@ -241,6 +242,16 @@ class Graph:
             if visited[i] == False:
                 return False
         return True
+
+    def isTreeGraph(self):
+        if self.directed == False and self.isCycle() == False and self.isConnectedGraph() == True:
+            return True
+        return False
+
+    def isForestGraph(self):
+        if self.directed == False and self.isCycle() == False:
+            return True
+        return False
 
 #Driver code
 graph = Graph()
@@ -284,5 +295,7 @@ print('isCompleteGraph : ' , graph.isCompleteGraph(),'\n')
 print('isCyclicGraph : ' , graph.isCyclicGraph(),'\n')
 print('isConnectedGraph : ',graph.isConnectedGraph(),'\n')
 print('isStronglyConnectedGraph : ',graph.isStronglyConnectedGraph(),'\n')
+print('isTreeGraph : ',graph.isTreeGraph(),'\n')
+print('isForestGraph : ',graph.isForestGraph(),'\n')
 
 print("---------DONE------------")
