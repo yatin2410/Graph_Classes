@@ -247,6 +247,20 @@ class Graph:
         else:
             return False
 
+    def isCubeGraph(self):
+        k = 0
+        while 2**k < self.nodes:
+            k += 1
+        if 2**k == self.nodes:
+            Degree = self.isRegularGraph(False)
+            if Degree == k:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+
     def BipartedDFS(self,node,visited,color):
         for u in self.graphList[node]:
             if visited[u] == False:
@@ -457,5 +471,6 @@ print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
 print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
 print('isPaleyGraph : ',graph.isPaleyGraph(),'\n')
+print('isCubeGraph : ',graph.isCubeGraph(),'\n')
 
 print("---------DONE------------")
