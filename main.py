@@ -10,18 +10,23 @@ class Graph:
         self.nodes = 0
         self.edges = 0
         self.chromaticNumber = 0
+        self.Color = []
 
     def changeDirected(self):
         self.directed = True
 
     def setNodes(self,n):
         self.nodes = n
+        self.Color = [0]*(self.nodes+1)
     
     def setEdges(self,n):
         self.edges = n
     
     def setChrometicNumber(self,m):
         self.chromaticNumber = m
+
+    def setColors(self,FinalColor):
+        self.Color = FinalColor.copy()
 
     def addEdge(self,u,v):
         if self.directed == False:
@@ -426,12 +431,28 @@ class Graph:
             else:
                 low = mid + 1
         self.setChrometicNumber(m)
+        self.setColors(FinalColor)
         print("\nChromatic number is : ",self.chromaticNumber)
         for i in range(1,self.nodes+1):
-            print("node : ",i,", color :  ",FinalColor[i])
+            print("node : ",i,", color :  ",self.Color[i])
         print()
         return True
 
+    def isCompleteMultiPartitieGraph(self):
+        self.isMultiGraph()
+        cntColor = [0]*(self.chromaticNumber+1)
+        for i in range(1,self.nodes+1):
+            cntColor[self.Color[i]]+=1
+        sum = 0
+        for i in range(1,self.chromaticNumber+1):
+            sum += cntColor[i]
+        for i in range(1,nodes+1):
+            s = set()
+            for u in self.graphList[i]:
+                s.add(u)
+            if (sum-cntColor[self.Color[i]]) != len(s):
+                return False
+        return True
 
 #Driver code
 graph = Graph()
@@ -482,5 +503,6 @@ print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
 print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
 print('isMultiPartiteGraph : ',graph.isMultiPartiteGraph(),'\n')
+print('isCompleteMultiPartitieGraph :',graph.isCompleteMultiPartitieGraph(),'\n')
 
 print("---------DONE------------")
