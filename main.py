@@ -109,8 +109,9 @@ class Graph:
 
     def isStronglyRegularGraph(self,wantToPrint):
         Degree = self.isRegularGraph(False)
+        result = [-1]*3
         if Degree == -1:
-            return False
+            return result
 
         edgeSet = set()
 
@@ -138,27 +139,33 @@ class Graph:
                     if lemmda == -1:
                         lemmda = len(Set1)
                     elif lemmda != len(Set1):
-                        return False
+                        return result
         
         MU = -1
         rightTerm = Degree * (Degree - lemmda - 1)
         leftTerm = (nodes - Degree - 1)
 
         if nodes == 1 or lemmda == -1 or (rightTerm !=0 and leftTerm == 0):
-            return False
+            return result
 
         if rightTerm == 0:
             MU = 0
             if wantToPrint:
                 print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
-            return True
+            result[0] = Degree
+            result[1] = lemmda
+            result[2] = MU
+            return result
         elif rightTerm % leftTerm == 0:
             MU = rightTerm // leftTerm
             if wantToPrint:
                 print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
-            return True
+            result[0] = Degree
+            result[1] = lemmda
+            result[2] = MU
+            return result
         else:
-            return False
+            return result
 
     def isPathPossible(self,start,end,visited):
         for u in self.graphList[start]:
@@ -231,6 +238,21 @@ class Graph:
 
         if Degree == 3:
             return True
+        else:
+            return False
+
+    def isPaleyGraph(self):
+        result = self.isStronglyRegularGraph(False)
+
+        Degree = result[0];
+        lemmda = result[1];
+        MU = result[2];
+
+        if self.nodes % 4 == 1:
+            if (self.nodes-1)//2 == Degree and (self.nodes-5)//4 == lemmda and (self.nodes-1)//4 == MU:
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -484,9 +506,13 @@ print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
 if graph.isRegularGraph(True) == -1:
     print('isRegularGraph : False\n')
 else:
-    print('isRegularGraph : True\n')        
+    print('isRegularGraph : True\n') 
 
-print('isStronglyRegularGraph : ' , graph.isStronglyRegularGraph(True),'\n')
+if graph.isStronglyRegularGraph(True)[0] == -1:
+    print('isStronglyRegularGraph: False\n')
+else:
+    print('isStronglyRegularGraph : True\n')       
+
 print('isCubicGraph : ' , graph.isCubicGraph(),'\n')
 print('isBipartedGraph : ',graph.isBipartedGraph(),'\n')
 print('isCycleGraph : ' , graph.isCycleGraph(),'\n')
@@ -504,5 +530,6 @@ print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
 print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
 print('isMultiPartiteGraph : ',graph.isMultiPartiteGraph(),'\n')
 print('isCompleteMultiPartitieGraph :',graph.isCompleteMultiPartitieGraph(),'\n')
+print('isPaleyGraph : ',graph.isPaleyGraph(),'\n')
 
 print("---------DONE------------")
