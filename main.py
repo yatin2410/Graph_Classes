@@ -9,15 +9,24 @@ class Graph:
         self.directed = False
         self.nodes = 0
         self.edges = 0
+        self.chromaticNumber = 0
+        self.Color = []
 
     def changeDirected(self):
         self.directed = True
 
     def setNodes(self,n):
         self.nodes = n
+        self.Color = [0]*(self.nodes+1)
     
     def setEdges(self,n):
         self.edges = n
+    
+    def setChrometicNumber(self,m):
+        self.chromaticNumber = m
+
+    def setColors(self,FinalColor):
+        self.Color = FinalColor.copy()
 
     def addEdge(self,u,v):
         if self.directed == False:
@@ -418,6 +427,69 @@ class Graph:
             return False
         return True
 
+    def isSafeColor(self,node,color,c):
+        for u in self.graphList[node]:
+            if c == color[u]:
+                return False
+        return True
+
+    def graphColoringUtil(self,m,color,node):
+        if node==self.nodes+1:
+            return True
+        for i in range(1,m+1):
+            if(self.isSafeColor(node,color,i)):
+                color[node] = i
+                # print(node," ",i)
+                if self.graphColoringUtil(m,color,node+1) == True:
+                    return True
+                color[node] = 0
+        return False
+
+    def isKPartiteGraph(self,m,color):
+        return self.graphColoringUtil(m,color,1)
+
+    def isMultiPartiteGraph(self):
+        if self.chromaticNumber != 0:
+            return True
+        low = 2
+        high = self.nodes
+        m = high
+        FinalColor = [0]*(self.nodes+1)
+        while low<=high:
+            mid = (low+high)//2
+            color = [0]*(self.nodes+1)
+            # print(mid)
+            if self.isKPartiteGraph(mid,color):
+                m = mid
+                # print("in",m)
+                FinalColor = color.copy()
+                high = mid -1
+            else:
+                low = mid + 1
+        self.setChrometicNumber(m)
+        self.setColors(FinalColor)
+        print("\nChromatic number is : ",self.chromaticNumber)
+        for i in range(1,self.nodes+1):
+            print("node : ",i,", color :  ",self.Color[i])
+        print()
+        return True
+
+    def isCompleteMultiPartitieGraph(self):
+        self.isMultiGraph()
+        cntColor = [0]*(self.chromaticNumber+1)
+        for i in range(1,self.nodes+1):
+            cntColor[self.Color[i]]+=1
+        sum = 0
+        for i in range(1,self.chromaticNumber+1):
+            sum += cntColor[i]
+        for i in range(1,nodes+1):
+            s = set()
+            for u in self.graphList[i]:
+                s.add(u)
+            if (sum-cntColor[self.Color[i]]) != len(s):
+                return False
+        return True
+
 #Driver code
 graph = Graph()
 
@@ -470,6 +542,8 @@ print('isRooksGraph : ',graph.isRooksGraph(),'\n')
 print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
 print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
+print('isMultiPartiteGraph : ',graph.isMultiPartiteGraph(),'\n')
+print('isCompleteMultiPartitieGraph :',graph.isCompleteMultiPartitieGraph(),'\n')
 print('isPaleyGraph : ',graph.isPaleyGraph(),'\n')
 print('isCubeGraph : ',graph.isCubeGraph(),'\n')
 
