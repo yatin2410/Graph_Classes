@@ -1,5 +1,6 @@
 from collections import defaultdict
 from itertools import combinations 
+import math
 
 #class Graph
 class Graph:
@@ -266,6 +267,38 @@ class Graph:
                 return True
             else:
                 return False
+        else:
+            return False
+
+    def isHararyGraph(self):
+        Degree = self.isRegularGraph(False)
+
+        if Degree > 1:
+            print("H(k,n) = ( k =",Degree,", n =",self.nodes,")")
+            return True
+        elif Degree == -1:
+            DegreeSet = set()
+            for i in range(1,nodes+1):
+                DegreeSet.add(len(self.graphList[i]))
+
+            if len(DegreeSet)==2:
+                DegreeArray = []
+                for i in DegreeSet:
+                    DegreeArray.append(i)
+
+                cnt = 0
+                for i in range(1,nodes+1):
+                    if len(self.graphList[i]) == DegreeArray[1]:
+                        cnt +=1
+
+                if cnt==1 and (DegreeArray[1] - DegreeArray[0] == 1) and DegreeArray[0] >=2 and math.ceil((DegreeArray[0]*self.nodes)/2) == self.edges:
+                    print("H(k,n) = ( k =",DegreeArray[0],", n =",self.nodes,")")
+                    return True
+                else:
+                    return False
+            else:
+                return False
+                    
         else:
             return False
 
@@ -546,5 +579,6 @@ print('isMultiPartiteGraph : ',graph.isMultiPartiteGraph(),'\n')
 print('isCompleteMultiPartitieGraph :',graph.isCompleteMultiPartitieGraph(),'\n')
 print('isPaleyGraph : ',graph.isPaleyGraph(),'\n')
 print('isCubeGraph : ',graph.isCubeGraph(),'\n')
+print('isHararyGraph : ',graph.isHararyGraph(),'\n')
 
 print("---------DONE------------")
