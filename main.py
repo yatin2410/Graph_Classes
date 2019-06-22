@@ -475,7 +475,7 @@ class Graph:
         return True
 
     def isCompleteMultiPartitieGraph(self):
-        self.isMultiGraph()
+        self.isMultiPartiteGraph()
         cntColor = [0]*(self.chromaticNumber+1)
         for i in range(1,self.nodes+1):
             cntColor[self.Color[i]]+=1
