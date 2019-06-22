@@ -382,6 +382,18 @@ class Graph:
             return False
         return True
 
+    def isPaleyGraph(self):
+        if self.nodes%4 != 1:
+            return False
+        Set = set()
+        for i in range(1, self.nodes):
+            Set.add((i*i)%self.nodes)
+        for x in range(0,self.nodes):
+            for i in Set:
+                if (x+i)%self.nodes+1 not in self.graphList[x+1]:
+                    return False
+        return True
+
 #Driver code
 graph = Graph()
 
@@ -430,5 +442,6 @@ print('isRooksGraph : ',graph.isRooksGraph(),'\n')
 print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
 print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
+print('isPaleyGraph : ',graph.isPaleyGraph(),'\n')
 
 print("---------DONE------------")
