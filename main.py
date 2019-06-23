@@ -523,6 +523,38 @@ class Graph:
                 return False
         return True
 
+    def isKneserGraph(self):
+        self.isMultiPartiteGraph()
+        chromaticNumber = self.chromaticNumber
+        if chromaticNumber == 1:
+            return True
+        Degree = self.isRegularGraph(False)
+        if Degree == -1 or Degree*self.nodes != 2*self.edges:
+            return False
+        for k in range(1,100):
+            n = 2*k + chromaticNumber - 2
+            if self.nCr(n, k) == self.nodes and self.nCr(n, k)*self.nCr(n-k, k) == 2*self.edges and self.nCr(n-k, k) == Degree:
+                print(n, k)
+                return True
+        return False
+
+    def isJohnsonGraph(self):
+        Degree = self.isRegularGraph(False)
+        if Degree == -1 or Degree*self.nodes != 2*self.edges:
+            return False
+        for k in range(1,100):
+            if Degree%k != 0:
+                continue
+            n = Degree/k + k
+            if self.nCr(n, k) == self.nodes and self.nCr(n, k)*k*(n-k) == 2*self.edges and k*(n-k) == Degree:
+                print(n, k)
+                return True
+        return False
+
+    def nCr(self, n, r):
+        f = math.factorial
+        return f(n)/f(r)/f(n-r)
+
 #Driver code
 graph = Graph()
 
@@ -580,5 +612,7 @@ print('isCompleteMultiPartitieGraph :',graph.isCompleteMultiPartitieGraph(),'\n'
 print('isPaleyGraph : ',graph.isPaleyGraph(),'\n')
 print('isCubeGraph : ',graph.isCubeGraph(),'\n')
 print('isHararyGraph : ',graph.isHararyGraph(),'\n')
+print('isKneserGraph : ',graph.isKneserGraph(),'\n')
+print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
 
 print("---------DONE------------")
