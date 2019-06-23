@@ -534,7 +534,7 @@ class Graph:
         for k in range(1,100):
             n = 2*k + chromaticNumber - 2
             if self.nCr(n, k) == self.nodes and self.nCr(n, k)*self.nCr(n-k, k) == 2*self.edges and self.nCr(n-k, k) == Degree:
-                print(n, k)
+                print("K(n,k) = ( n =",n,", k =",k,")")
                 return True
         return False
 
@@ -547,13 +547,26 @@ class Graph:
                 continue
             n = Degree/k + k
             if self.nCr(n, k) == self.nodes and self.nCr(n, k)*k*(n-k) == 2*self.edges and k*(n-k) == Degree:
-                print(n, k)
+                print("J(n,k) = ( n =",n,", k =",k,")")
                 return True
         return False
 
     def nCr(self, n, r):
         f = math.factorial
         return f(n)/f(r)/f(n-r)
+
+    def isHammingGraph(self):
+        Degree = self.isRegularGraph(False)
+        if Degree == -1 or Degree*self.nodes != 2*self.edges:
+            return False
+        q = self.chromaticNumber
+        for d in range(1,100):
+            if Degree%d != 0:
+                continue
+            if q**d == self.nodes and d*(q-1)*(q**d) == 2*self.edges and d*(q-1) == Degree:
+                print("H(d,q) = ( d =",d,", q =",q,")")
+                return True
+        return False
 
 #Driver code
 graph = Graph()
@@ -614,5 +627,6 @@ print('isCubeGraph : ',graph.isCubeGraph(),'\n')
 print('isHararyGraph : ',graph.isHararyGraph(),'\n')
 print('isKneserGraph : ',graph.isKneserGraph(),'\n')
 print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
+print('isHammingGraph : ',graph.isHammingGraph(),'\n')
 
 print("---------DONE------------")
