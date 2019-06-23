@@ -1,5 +1,6 @@
 from collections import defaultdict
 from itertools import combinations 
+import math
 
 #class Graph
 class Graph:
@@ -9,15 +10,24 @@ class Graph:
         self.directed = False
         self.nodes = 0
         self.edges = 0
+        self.chromaticNumber = 0
+        self.Color = []
 
     def changeDirected(self):
         self.directed = True
 
     def setNodes(self,n):
         self.nodes = n
+        self.Color = [0]*(self.nodes+1)
     
     def setEdges(self,n):
         self.edges = n
+    
+    def setChrometicNumber(self,m):
+        self.chromaticNumber = m
+
+    def setColors(self,FinalColor):
+        self.Color = FinalColor.copy()
 
     def addEdge(self,u,v):
         if self.directed == False:
@@ -100,8 +110,9 @@ class Graph:
 
     def isStronglyRegularGraph(self,wantToPrint):
         Degree = self.isRegularGraph(False)
+        result = [-1]*3
         if Degree == -1:
-            return False
+            return result
 
         edgeSet = set()
 
@@ -129,27 +140,33 @@ class Graph:
                     if lemmda == -1:
                         lemmda = len(Set1)
                     elif lemmda != len(Set1):
-                        return False
+                        return result
         
         MU = -1
         rightTerm = Degree * (Degree - lemmda - 1)
         leftTerm = (nodes - Degree - 1)
 
         if nodes == 1 or lemmda == -1 or (rightTerm !=0 and leftTerm == 0):
-            return False
+            return result
 
         if rightTerm == 0:
             MU = 0
             if wantToPrint:
                 print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
-            return True
+            result[0] = Degree
+            result[1] = lemmda
+            result[2] = MU
+            return result
         elif rightTerm % leftTerm == 0:
             MU = rightTerm // leftTerm
             if wantToPrint:
                 print('srg(Nodes = ',nodes,', Degree = ',Degree,', Lemmda = ',lemmda,', Mu = ',MU,')')
-            return True
+            result[0] = Degree
+            result[1] = lemmda
+            result[2] = MU
+            return result
         else:
-            return False
+            return result
 
     def isPathPossible(self,start,end,visited):
         for u in self.graphList[start]:
@@ -224,6 +241,67 @@ class Graph:
             return True
         else:
             return False
+
+    def isPaleyGraph(self):
+        result = self.isStronglyRegularGraph(False)
+
+        Degree = result[0];
+        lemmda = result[1];
+        MU = result[2];
+
+        if self.nodes % 4 == 1:
+            if (self.nodes-1)//2 == Degree and (self.nodes-5)//4 == lemmda and (self.nodes-1)//4 == MU:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def isCubeGraph(self):
+        k = 0
+        while 2**k < self.nodes:
+            k += 1
+        if 2**k == self.nodes:
+            Degree = self.isRegularGraph(False)
+            if Degree == k:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def isHararyGraph(self):
+        Degree = self.isRegularGraph(False)
+
+        if Degree > 1:
+            print("H(k,n) = ( k =",Degree,", n =",self.nodes,")")
+            return True
+        elif Degree == -1:
+            DegreeSet = set()
+            for i in range(1,nodes+1):
+                DegreeSet.add(len(self.graphList[i]))
+
+            if len(DegreeSet)==2:
+                DegreeArray = []
+                for i in DegreeSet:
+                    DegreeArray.append(i)
+
+                cnt = 0
+                for i in range(1,nodes+1):
+                    if len(self.graphList[i]) == DegreeArray[1]:
+                        cnt +=1
+
+                if cnt==1 and (DegreeArray[1] - DegreeArray[0] == 1) and DegreeArray[0] >=2 and math.ceil((DegreeArray[0]*self.nodes)/2) == self.edges:
+                    print("H(k,n) = ( k =",DegreeArray[0],", n =",self.nodes,")")
+                    return True
+                else:
+                    return False
+            else:
+                return False
+                    
+        else:
+            return False
+
 
     def BipartedDFS(self,node,visited,color):
         for u in self.graphList[node]:
@@ -382,17 +460,100 @@ class Graph:
             return False
         return True
 
-    def isPaleyGraph(self):
-        if self.nodes%4 != 1:
-            return False
-        Set = set()
-        for i in range(1, self.nodes):
-            Set.add((i*i)%self.nodes)
-        for x in range(0,self.nodes):
-            for i in Set:
-                if (x+i)%self.nodes+1 not in self.graphList[x+1]:
-                    return False
+    def isSafeColor(self,node,color,c):
+        for u in self.graphList[node]:
+            if c == color[u]:
+                return False
         return True
+
+    def graphColoringUtil(self,m,color,node):
+        if node==self.nodes+1:
+            return True
+        for i in range(1,m+1):
+            if(self.isSafeColor(node,color,i)):
+                color[node] = i
+                # print(node," ",i)
+                if self.graphColoringUtil(m,color,node+1) == True:
+                    return True
+                color[node] = 0
+        return False
+
+    def isKPartiteGraph(self,m,color):
+        return self.graphColoringUtil(m,color,1)
+
+    def isMultiPartiteGraph(self):
+        if self.chromaticNumber != 0:
+            return True
+        low = 2
+        high = self.nodes
+        m = high
+        FinalColor = [0]*(self.nodes+1)
+        while low<=high:
+            mid = (low+high)//2
+            color = [0]*(self.nodes+1)
+            # print(mid)
+            if self.isKPartiteGraph(mid,color):
+                m = mid
+                # print("in",m)
+                FinalColor = color.copy()
+                high = mid -1
+            else:
+                low = mid + 1
+        self.setChrometicNumber(m)
+        self.setColors(FinalColor)
+        print("\nChromatic number is : ",self.chromaticNumber)
+        for i in range(1,self.nodes+1):
+            print("node : ",i,", color :  ",self.Color[i])
+        print()
+        return True
+
+    def isCompleteMultiPartitieGraph(self):
+        self.isMultiPartiteGraph()
+        cntColor = [0]*(self.chromaticNumber+1)
+        for i in range(1,self.nodes+1):
+            cntColor[self.Color[i]]+=1
+        sum = 0
+        for i in range(1,self.chromaticNumber+1):
+            sum += cntColor[i]
+        for i in range(1,nodes+1):
+            s = set()
+            for u in self.graphList[i]:
+                s.add(u)
+            if (sum-cntColor[self.Color[i]]) != len(s):
+                return False
+        return True
+
+    def isKneserGraph(self):
+        self.isMultiPartiteGraph()
+        chromaticNumber = self.chromaticNumber
+        if chromaticNumber == 1:
+            return True
+        Degree = self.isRegularGraph(False)
+        if Degree == -1 or Degree*self.nodes != 2*self.edges:
+            return False
+        for k in range(1,100):
+            n = 2*k + chromaticNumber - 2
+            if self.nCr(n, k) == self.nodes and self.nCr(n, k)*self.nCr(n-k, k) == 2*self.edges and self.nCr(n-k, k) == Degree:
+                print(n, k)
+                return True
+        return False
+
+    def isJohnsonGraph(self):
+        Degree = self.isRegularGraph(False)
+        if Degree == -1 or Degree*self.nodes != 2*self.edges:
+            return False
+        for k in range(1,100):
+            if Degree%k != 0:
+                continue
+            n = Degree/k + k
+            if self.nCr(n, k) == self.nodes and self.nCr(n, k)*k*(n-k) == 2*self.edges and k*(n-k) == Degree:
+                print(n, k)
+                return True
+        return False
+
+    def nCr(self, n, r):
+        f = math.factorial
+        return f(n)/f(r)/f(n-r)
 
 #Driver code
 graph = Graph()
@@ -424,9 +585,13 @@ print('isEdgeLessGraph : ' , graph.isEdgeLessGraph(),'\n')
 if graph.isRegularGraph(True) == -1:
     print('isRegularGraph : False\n')
 else:
-    print('isRegularGraph : True\n')        
+    print('isRegularGraph : True\n') 
 
-print('isStronglyRegularGraph : ' , graph.isStronglyRegularGraph(True),'\n')
+if graph.isStronglyRegularGraph(True)[0] == -1:
+    print('isStronglyRegularGraph: False\n')
+else:
+    print('isStronglyRegularGraph : True\n')       
+
 print('isCubicGraph : ' , graph.isCubicGraph(),'\n')
 print('isBipartedGraph : ',graph.isBipartedGraph(),'\n')
 print('isCycleGraph : ' , graph.isCycleGraph(),'\n')
@@ -442,6 +607,12 @@ print('isRooksGraph : ',graph.isRooksGraph(),'\n')
 print('isCompleteBipartedGraph : ',graph.isCompleteBipartedGraph(),'\n')
 print('isThresholdGraph : ',graph.isThresholdGraph(),'\n')
 print('isPlanarGraph : ',graph.isPlanarGraph(),'\n')
+print('isMultiPartiteGraph : ',graph.isMultiPartiteGraph(),'\n')
+print('isCompleteMultiPartitieGraph :',graph.isCompleteMultiPartitieGraph(),'\n')
 print('isPaleyGraph : ',graph.isPaleyGraph(),'\n')
+print('isCubeGraph : ',graph.isCubeGraph(),'\n')
+print('isHararyGraph : ',graph.isHararyGraph(),'\n')
+print('isKneserGraph : ',graph.isKneserGraph(),'\n')
+print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
 
 print("---------DONE------------")
