@@ -61,10 +61,7 @@ class Graph:
         return False
 
     def isSimpleGraph(self):
-        if self.isCycle() == True:
-            return False
-        else:
-            return True
+        return not self.isCycle()
 
     def isMultiGraph(self):
         return True
@@ -230,9 +227,6 @@ class Graph:
                 if isK33 == True:
                     return False
         return True
-
-
-
 
     def isCubicGraph(self):
         Degree = self.isRegularGraph(False)
@@ -568,6 +562,49 @@ class Graph:
                 return True
         return False
 
+    def findSimplicialNode(self, graphList):
+        for simplicialNode in graphList:
+            isSimplicialNode = True
+            list = []
+            list.append(simplicialNode)
+            for adj in graphList[simplicialNode]:
+                list.append(adj)
+            for i in list:
+                for j in list:
+                    if i == j:
+                        continue
+                    if j not in graphList[i]:
+                        isSimplicialNode = False
+                        break
+                if isSimplicialNode == False:
+                    break
+            if isSimplicialNode == True:
+                return simplicialNode
+        return -1;
+
+    def isChordalGraph(self):
+        graphList = defaultdict(list)
+        for i in self.graphList:
+            for j in self.graphList[i]:
+                graphList[i].append(j)
+        length = len(graphList)
+        perfectEliminationOrder = []
+        while len(perfectEliminationOrder) != length:
+            simplicialNode = self.findSimplicialNode(graphList)
+            if simplicialNode == -1:
+                return False
+            if simplicialNode in graphList:
+                graphList.pop(simplicialNode, None)
+            for i in graphList:
+                if simplicialNode in graphList[i]:
+                    graphList[i].remove(simplicialNode)
+            perfectEliminationOrder.append(simplicialNode)
+        for i in self.graphList:
+            if len(self.graphList[i]) == 0:
+                perfectEliminationOrder.append(i)
+        print("Perfect Elimination Order: ", perfectEliminationOrder)
+        return True
+
 #Driver code
 graph = Graph()
 
@@ -628,5 +665,6 @@ print('isHararyGraph : ',graph.isHararyGraph(),'\n')
 print('isKneserGraph : ',graph.isKneserGraph(),'\n')
 print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
 print('isHammingGraph : ',graph.isHammingGraph(),'\n')
+print('isChordalGraph : ',graph.isChordalGraph(),'\n')
 
 print("---------DONE------------")
