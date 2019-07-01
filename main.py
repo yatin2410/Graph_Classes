@@ -712,7 +712,7 @@ class Graph:
             if simplicialNode in graphList:
                 graphList.pop(simplicialNode, None)
             for i in graphList:
-                if simplicialNode in graphList[i]:
+                while simplicialNode in graphList[i]:
                     graphList[i].remove(simplicialNode)
             perfectEliminationOrder.append(simplicialNode)
         for i in self.graphList:
