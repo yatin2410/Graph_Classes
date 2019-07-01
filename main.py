@@ -300,7 +300,8 @@ class Graph:
         marked[vert] = False
         return count 
 
-    def countCycles(self,marked,n): 
+    def countCycles(self,n): 
+        marked = [False]*(self.nodes+1)
         count = 0
         for i in range(1,self.nodes-(n-1)+1): 
             count = self.DFS(marked, n-1, i, i, count) 
@@ -323,9 +324,8 @@ class Graph:
 
         if Diameter == -1 or girth == int(sys.maxsize):
             return False
-
-        marked = [False]*(self.nodes+1) 
-        totalCycles =  self.countCycles(marked,girth)
+ 
+        totalCycles =  self.countCycles(girth)
 
         numerator = self.nodes*(self.edges-self.nodes+1)
         if girth == 2*Diameter+1 and numerator%girth==0 and totalCycles == numerator/girth:
@@ -407,8 +407,7 @@ class Graph:
                 else:
                     return False
             else:
-                return False
-                    
+                return False               
         else:
             return False
 
@@ -783,5 +782,6 @@ print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
 print('isHammingGraph : ',graph.isHammingGraph(),'\n')
 print('isChordalGraph : ',graph.isChordalGraph(),'\n')
 print('isMooreGraph : ',graph.isMooreGraph(),'\n')
+
 
 print("---------DONE------------")
