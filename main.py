@@ -114,6 +114,11 @@ class Graph:
         if Degree == -1:
             return result
 
+        if self.isEdgeLessGraph()==True:
+            if wantToPrint:
+                print('srg(nodes = ',nodes,', degree = 0 , lemmda = 0 , mu = 0 )')
+            return [0,0,0]
+
         edgeSet = set()
 
         for i in range(1,nodes+1):
@@ -300,7 +305,7 @@ class Graph:
         marked[vert] = False
         return count 
 
-    def countCycles(self,n): 
+    def countCycles(self,marked,n): 
         marked = [False]*(self.nodes+1)
         count = 0
         for i in range(1,self.nodes-(n-1)+1): 
@@ -325,7 +330,7 @@ class Graph:
         if Diameter == -1 or girth == int(sys.maxsize):
             return False
  
-        totalCycles =  self.countCycles(girth)
+        totalCycles =  self.countCycles(marked,girth)
 
         numerator = self.nodes*(self.edges-self.nodes+1)
         if girth == 2*Diameter+1 and numerator%girth==0 and totalCycles == numerator/girth:
@@ -355,9 +360,9 @@ class Graph:
     def isPaleyGraph(self):
         result = self.isStronglyRegularGraph(False)
 
-        Degree = result[0];
-        lemmda = result[1];
-        MU = result[2];
+        Degree = result[0]
+        lemmda = result[1]
+        MU = result[2]
 
         if self.nodes % 4 == 1:
             if (self.nodes-1)//2 == Degree and (self.nodes-5)//4 == lemmda and (self.nodes-1)//4 == MU:
@@ -407,7 +412,8 @@ class Graph:
                 else:
                     return False
             else:
-                return False               
+                return False
+                    
         else:
             return False
 
@@ -517,15 +523,46 @@ class Graph:
                 return False
         return True
 
+    def DFSDirected(self,node,stack,visited):
+        visited[node] = True
+        for u in self.graphList[node]:
+            if visited[u] == False:
+                self.DFSDirected(u,stack,visited)
+        stack.append(node)
+
+    def DFSComponent(self,node,visited,component,tempList):
+        visited[node] = True
+        component.append(node)
+        for u in tempList[node]:
+            if visited[u] == False:
+                self.DFSComponent(u,visited,component,tempList)
+
+
     def isStronglyConnectedGraph(self):
         if self.directed == False:
             return False
+        stack = []
         visited = [False]*(self.nodes+1)
-        self.ConnectedDFS(visited,1)
         for i in range(1,self.nodes+1):
             if visited[i] == False:
-                return False
+                self.DFSDirected(1,stack,visited)
+        tempList = defaultdict(list)
+        for i in range(1,self.nodes+1):
+            for u in self.graphList[i]:
+                tempList[u].append(i)
+        visited = [False]*(self.nodes+1)
+        while len(stack) > 0 :
+            u = stack.pop()
+            if visited[u] == True:
+                continue
+            component = []
+            self.DFSComponent(u,visited,component,tempList)
+            print("component is : ",end=' ')
+            for i in component:
+                print(i,end=' ')
+            print()
         return True
+        
 
     def isTreeGraph(self):
         if self.directed == False and self.isCycle() == False and self.isConnectedGraph() == True:
@@ -678,6 +715,8 @@ class Graph:
         return False
 
     def findSimplicialNode(self, graphList):
+        if self.directed == True:
+            return False
         for simplicialNode in graphList:
             isSimplicialNode = True
             list = []
@@ -695,7 +734,7 @@ class Graph:
                     break
             if isSimplicialNode == True:
                 return simplicialNode
-        return -1;
+        return -1
 
     def isChordalGraph(self):
         graphList = defaultdict(list)
@@ -782,6 +821,10 @@ print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
 print('isHammingGraph : ',graph.isHammingGraph(),'\n')
 print('isChordalGraph : ',graph.isChordalGraph(),'\n')
 print('isMooreGraph : ',graph.isMooreGraph(),'\n')
+
+# TO-DO 
+# chromaticNumber for directed Graph 
+# chrodal graph for directed graph
 
 
 print("---------DONE------------")
