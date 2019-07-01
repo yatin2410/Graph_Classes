@@ -1,6 +1,9 @@
 from collections import defaultdict
 from itertools import combinations 
 import math
+import queue
+import sys
+
 
 #class Graph
 class Graph:
@@ -227,6 +230,119 @@ class Graph:
                 if isK33 == True:
                     return False
         return True
+
+    def bfs(self,root,visited,distance,parent):
+        nodeQueue = queue.Queue()
+        nodeQueue.put(root)
+
+        while nodeQueue.empty()==False:
+            current = nodeQueue.get()
+            visited[current] = True
+
+            for adj in self.graphList[current]:
+                if visited[adj] == False:
+                    nodeQueue.put(adj)
+                    parent[adj] = current
+                    distance[adj] = distance[current] + 1
+                    visited[adj] = True
+
+    def shortestcycle(self,root,visited,distance,parent):
+        nodeQueue = queue.Queue()
+        nodeQueue.put(root)
+
+        while nodeQueue.empty()==False:
+            current = nodeQueue.get()
+            visited[current] = True
+
+            for adj in self.graphList[current]:
+                if visited[adj] == False:
+                    nodeQueue.put(adj)
+                    visited[adj] = True
+                if parent[current]==adj or parent[adj]==current:
+                    continue
+                return distance[current]+distance[adj]+1
+
+        return int(sys.maxsize)
+
+    def eccentricity(self,root):
+        visited = [False]*(self.nodes+1)
+        distance = [0]*(self.nodes+1)
+        parent = [-1]*(self.nodes+1)
+
+        self.bfs(root,visited,distance,parent)
+
+        maxDistance = 0
+        for i in range(1,self.nodes+1):
+            maxDistance = max(maxDistance,distance[i])
+
+        visited = [False]*(self.nodes+1)
+        girth = self.shortestcycle(root,visited,distance,parent)
+
+        result = []
+        result.append(maxDistance)
+        result.append(girth)
+
+        return result
+
+    def DFS(self, marked, n, vert, start, count): 
+        marked[vert] = True
+        if n == 0:  
+            marked[vert] = False
+            if start in self.graphList[vert]: 
+                count = count + 1
+                return count 
+            else: 
+                return count 
+
+        for i in self.graphList[vert]: 
+            if marked[i] == False:  
+                count = self.DFS(marked, n-1, i, start, count) 
+        marked[vert] = False
+        return count 
+
+    def countCycles(self,marked,n): 
+        count = 0
+        for i in range(1,self.nodes-(n-1)+1): 
+            count = self.DFS(marked, n-1, i, i, count) 
+            marked[i] = True
+          
+        return int(count/2) 
+
+    def isMooreGraph(self):
+        Degree = self.isRegularGraph(False)
+
+        if Degree == -1:
+            return False
+
+        Diameter = -1
+        girth = int(sys.maxsize)
+        for i in range(1,self.nodes+1):
+            result = self.eccentricity(i)
+            Diameter = max(Diameter,result[0])
+            girth = min(girth,result[1])
+
+        if Diameter == -1 or girth == int(sys.maxsize):
+            return False
+
+        marked = [False]*(self.nodes+1) 
+        totalCycles =  self.countCycles(marked,girth)
+
+        numerator = self.nodes*(self.edges-self.nodes+1)
+        if girth == 2*Diameter+1 and numerator%girth==0 and totalCycles == numerator/girth:
+            count = 0
+
+            for i in range(0,Diameter):
+                count += (Degree-1)**i
+
+            count *= Degree
+            count += 1
+
+            if math.ceil(count)==self.nodes:
+                return True
+            else:
+                return False
+        else:
+            return False
 
     def isCubicGraph(self):
         Degree = self.isRegularGraph(False)
@@ -666,5 +782,6 @@ print('isKneserGraph : ',graph.isKneserGraph(),'\n')
 print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
 print('isHammingGraph : ',graph.isHammingGraph(),'\n')
 print('isChordalGraph : ',graph.isChordalGraph(),'\n')
+print('isMooreGraph : ',graph.isMooreGraph(),'\n')
 
 print("---------DONE------------")
