@@ -306,7 +306,7 @@ class Graph:
         marked[vert] = False
         return count 
 
-    def countCycles(self,marked,n): 
+    def countCycles(self,n): 
         marked = [False]*(self.nodes+1)
         count = 0
         for i in range(1,self.nodes-(n-1)+1): 
@@ -331,7 +331,7 @@ class Graph:
         if Diameter == -1 or girth == int(sys.maxsize):
             return False
  
-        totalCycles =  self.countCycles(marked,girth)
+        totalCycles =  self.countCycles(girth)
 
         numerator = self.nodes*(self.edges-self.nodes+1)
         if girth == 2*Diameter+1 and numerator%girth==0 and totalCycles == numerator/girth:
@@ -349,6 +349,74 @@ class Graph:
                 return False
         else:
             return False
+
+    def isLineGraph(self):
+        occurence = [0]*(self.nodes+1)
+
+        edgeSet = set()
+
+        for i in range(1,nodes+1):
+            for j in self.graphList[i]:
+                if i < j:
+                    edgeSet.add((i,j))
+                else:
+                    edgeSet.add((j,i))
+
+        while len(edgeSet) > 0:
+            selectedEdge = edgeSet.pop()
+            currentClique = set()
+            currentClique.add(int(selectedEdge[0]))
+            currentClique.add(int(selectedEdge[1]))
+
+            removeEdgeSet = set()
+
+            for currentEdge in edgeSet:
+                x = currentEdge[0]
+                y = currentEdge[1]
+
+                if ((x in currentClique) or (y in currentClique))==False:
+                    continue
+
+                if (x in currentClique) and (y in currentClique):
+                    removeEdgeSet.add((currentEdge))
+
+                if y in currentClique:
+                    temp = x
+                    x = y
+                    y = temp
+
+                adjacentNode = set()
+
+                for node in self.graphList[y]:
+                    adjacentNode.add(node)
+
+                flag = False
+                for node in currentClique:
+                    if node not in adjacentNode:
+                        flag = True
+                        break 
+
+                if flag == True:
+                    continue
+
+                currentClique.add(y)
+                removeEdgeSet.add(currentEdge)
+
+            for edge in removeEdgeSet:
+                edgeSet.remove(edge)
+
+            for node in currentClique:
+                occurence[node] += 1
+
+            removeEdgeSet.clear()
+            currentClique.clear()
+
+        for i in range(1,nodes+1):
+            if occurence[i] > 2:
+                return False
+
+        return True
+
 
     def isCubicGraph(self):
         Degree = self.isRegularGraph(False)
@@ -894,6 +962,8 @@ print('isJohnsonGraph : ',graph.isJohnsonGraph(),'\n')
 print('isHammingGraph : ',graph.isHammingGraph(),'\n')
 print('isChordalGraph : ',graph.isChordalGraph(),'\n')
 print('isMooreGraph : ',graph.isMooreGraph(),'\n')
+print('isLineGraph : ',graph.isLineGraph(),'\n')
+
 
 graph.cliques = graph.Find_All_Cliques()
 for clique in graph.cliques:
