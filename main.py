@@ -8,8 +8,8 @@ import sys
 #class Graph
 class Graph:
     
-    def __init__(self):
-        self.graphList = defaultdict(list)
+    def __init__(self,lst=defaultdict(list)):
+        self.graphList = lst
         self.directed = False
         self.nodes = 0
         self.edges = 0
@@ -899,6 +899,32 @@ class Graph:
                         return False
         return True
 
+    def isCriticalGraph(self):
+        for i in range(1,self.nodes+1):
+            tempGraph = defaultdict(list)
+            for u in range(1,self.nodes+1):
+                if u == i:
+                    continue
+                for v in self.graphList[u]:
+                    if v == i:
+                        continue
+                    if v > i and u > i:
+                        tempGraph[u-1].append(v-1)
+                    elif v < i and u > i :
+                        tempGraph[u-1].append(v)
+                    elif v < i and u < i :
+                        tempGraph[u].append(v)
+                    elif v > i and u < i :
+                        tempGraph[u].append(v-1)
+
+            tGraph = Graph(tempGraph)
+            tGraph.setNodes(nodes-1)
+            # print(tGraph.graphList)
+            # print(tGraph.isMultiPartiteGraph())
+            self.isMultiPartiteGraph()
+            if tGraph.chromaticNumber+1!=self.chromaticNumber:
+                return False
+        return True
 
 #Driver code
 graph = Graph()
@@ -971,7 +997,7 @@ for clique in graph.cliques:
     print(clique)
 
 print('isSplitGraph : ',graph.isSplitGraph(),'\n')
-
+print('isCriticalGraph : ',graph.isCriticalGraph(),'\n')
 
 
 print("---------DONE------------")
