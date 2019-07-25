@@ -15,6 +15,7 @@ class Graph:
         self.edges = 0
         self.chromaticNumber = 0
         self.Color = []
+        self.cliques = []
 
     def changeDirected(self):
         self.directed = True
@@ -759,6 +760,78 @@ class Graph:
         print("Perfect Elimination Order: ", perfectEliminationOrder)
         return True
 
+    def Find_All_Cliques(self):
+        '''
+        Implements Bron-Kerbosch algorithm, Version 2
+        '''
+        Cliques=[]
+        Stack=[]
+        nd=None
+        Nodes = []
+        for i in range(1,self.nodes+1):
+            Nodes.append(i)
+        disc_num=len(Nodes)
+        search_node=(set(),set(Nodes),set(),nd,disc_num) 
+        Stack.append(search_node)
+        while len(Stack)!=0:
+            (c_compsub,c_candidates,c_not,c_nd,c_disc_num)=Stack.pop()
+            if len(c_candidates)==0 and len(c_not)==0:
+                if len(c_compsub)>2:
+                    Cliques.append(c_compsub)
+                    continue
+            for u in list(c_candidates):
+                if (c_nd==None) or (not c_nd in self.graphList[u]): #self.are_adjacent(u, c_nd)):
+                    c_candidates.remove(u)
+                    Nu=self.graphList[u]                                
+                    new_compsub=set(c_compsub)
+                    new_compsub.add(u)
+                    new_candidates=set(c_candidates.intersection(Nu))
+                    new_not=set(c_not.intersection(Nu))                    
+                    if c_nd!=None:
+                        if c_nd in new_not:
+                            new_disc_num=c_disc_num-1
+                            if new_disc_num>0:
+                                new_search_node=(new_compsub,new_candidates,new_not,c_nd,new_disc_num)                        
+                                Stack.append(new_search_node)
+                        else:
+                            new_disc_num=len(Nodes)
+                            new_nd=c_nd
+                            for cand_nd in new_not:
+                                cand_disc_num=len(new_candidates)-len(new_candidates.intersection(self.graphList[cand_nd])) 
+                                if cand_disc_num<new_disc_num:
+                                    new_disc_num=cand_disc_num
+                                    new_nd=cand_nd
+                            new_search_node=(new_compsub,new_candidates,new_not,new_nd,new_disc_num)                        
+                            Stack.append(new_search_node)                
+                    else:
+                        new_search_node=(new_compsub,new_candidates,new_not,c_nd,c_disc_num)
+                        Stack.append(new_search_node)
+                    c_not.add(u) 
+                    new_disc_num=0
+                    for x in c_candidates:
+                        if not u in self.graphList[x]: #self.are_adjacent(x, u):
+                            new_disc_num+=1
+                    if new_disc_num<c_disc_num and new_disc_num>0:
+                        new1_search_node=(c_compsub,c_candidates,c_not,u,new_disc_num)
+                        Stack.append(new1_search_node)
+                    else:
+                        new1_search_node=(c_compsub,c_candidates,c_not,c_nd,c_disc_num)
+                        Stack.append(new1_search_node)     
+        return Cliques
+
+    def isSplitGraph(self):
+        for clique in self.cliques:
+            vertices = []
+            for i in range(1,self.nodes+1):
+                if i not in clique:
+                    vertices.append(i)
+            for u in vertices:
+                for v in vertices:
+                    if v in self.graphList[u]:
+                        return False
+        return True
+
+
 #Driver code
 graph = Graph()
 
@@ -822,9 +895,13 @@ print('isHammingGraph : ',graph.isHammingGraph(),'\n')
 print('isChordalGraph : ',graph.isChordalGraph(),'\n')
 print('isMooreGraph : ',graph.isMooreGraph(),'\n')
 
-# TO-DO 
-# chromaticNumber for directed Graph 
-# chrodal graph for directed graph
+graph.cliques = graph.Find_All_Cliques()
+for clique in graph.cliques:
+    print("Maximal clique is :",end=" ")
+    print(clique)
+
+print('isSplitGraph : ',graph.isSplitGraph(),'\n')
+
 
 
 print("---------DONE------------")
