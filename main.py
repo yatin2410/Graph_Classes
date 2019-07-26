@@ -65,7 +65,15 @@ class Graph:
         return False
 
     def isSimpleGraph(self):
-        return not self.isCycle()
+        edgeSet = set()
+        for node in range(1,self.nodes+1):
+            for adj in self.graphList[node]:
+                if node == adj:
+                    return False
+                if (node,adj) in edgeSet:
+                    return False
+                edgeSet.add((node,adj))
+        return True
 
     def isMultiGraph(self):
         return True
@@ -899,7 +907,7 @@ class Graph:
                         return False
         return True
 
-    def isCriticalGraph(self):
+    def isColorCriticalGraph(self):
         for i in range(1,self.nodes+1):
             tempGraph = defaultdict(list)
             for u in range(1,self.nodes+1):
@@ -997,7 +1005,7 @@ for clique in graph.cliques:
     print(clique)
 
 print('isSplitGraph : ',graph.isSplitGraph(),'\n')
-print('isCriticalGraph : ',graph.isCriticalGraph(),'\n')
+print('isColorCriticalGraph : ',graph.isColorCriticalGraph(),'\n')
 
 
 print("---------DONE------------")
