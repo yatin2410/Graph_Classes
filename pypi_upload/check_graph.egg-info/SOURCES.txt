@@ -1,0 +1,7 @@
+README.md
+setup.py
+check_graph/__init__.py
+check_graph.egg-info/PKG-INFO
+check_graph.egg-info/SOURCES.txt
+check_graph.egg-info/dependency_links.txt
+check_graph.egg-info/top_level.txt

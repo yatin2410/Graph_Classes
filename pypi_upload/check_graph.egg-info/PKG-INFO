@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: check-graph
+Version: 1.0.0
+Summary: This package is for graph classes recognisation.
+Home-page: https://github.com/yatin2410/Graph_Classes
+Author: Yatin Patel
+Author-email: yatinpatel.gt@gmail.com
+License: UNKNOWN
+Description: # Check Graph
+        
+        You can use this package for recognisation of various graph classes.
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
