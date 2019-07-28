@@ -16,15 +16,22 @@ class Graph:
         self.chromaticNumber = 0
         self.Color = []
         self.cliques = []
+        self.curEdge = 0
 
     def changeDirected(self):
         self.directed = True
 
     def setNodes(self,n):
+        if self.nodes != 0:
+            print('Nodes are already setted!')
+            return 
         self.nodes = n
         self.Color = [0]*(self.nodes+1)
     
     def setEdges(self,n):
+        if self.edges != 0:
+            print('Edges are already setted!')
+            return
         self.edges = n
     
     def setChrometicNumber(self,m):
@@ -34,19 +41,37 @@ class Graph:
         self.Color = FinalColor.copy()
 
     def addEdge(self,u,v):
+        if self.curEdge == self.edges:
+            print('You have already entered all edges')
+            return
+        if u<1 or u>self.nodes or v<1 or v>self.nodes:
+            print('Invalid node Number')
+            return 
+
+        self.curEdge += 1
         if self.directed == False:
             self.graphList[u].append(v)
             self.graphList[v].append(u)
         else:
             self.graphList[u].append(v)
 
+    def checkEdgesFull(self):
+        if self.curEdge == self.edges:
+            return True
+        print('Please Enter All Edges First')
+        return False
+
     def isEdgeLessGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.edges == 0:
             return True
         else:
             return False
 
     def isCycleUtil(self, node, visited, parent):
+        if self.checkEdgesFull() == False:
+            return
         visited[node] = True
         for adj in self.graphList[node]:
             if visited[adj] == False:
@@ -57,6 +82,8 @@ class Graph:
         return False
 
     def isCycle(self):
+        if self.checkEdgesFull() == False:
+            return        
         visited = [False]*(self.nodes+1)
         for node in range(self.nodes):
             if visited[node+1] == False:
@@ -65,6 +92,8 @@ class Graph:
         return False
 
     def isSimpleGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         edgeSet = set()
         for node in range(1,self.nodes+1):
             for adj in self.graphList[node]:
@@ -76,9 +105,13 @@ class Graph:
         return True
 
     def isMultiGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         return True
           
     def isRegularGraph(self,wantToPrint):
+        if self.checkEdgesFull() == False:
+            return
         isDegreeSame = True
         Degree = -1
 
@@ -118,6 +151,8 @@ class Graph:
         return Degree
 
     def isStronglyRegularGraph(self,wantToPrint):
+        if self.checkEdgesFull() == False:
+            return
         Degree = self.isRegularGraph(False)
         result = [-1]*3
         if Degree == -1:
@@ -183,6 +218,8 @@ class Graph:
             return result
 
     def isPathPossible(self,start,end,visited):
+        if self.checkEdgesFull() == False:
+            return
         for u in self.graphList[start]:
             if u == end:
                 return True
@@ -194,6 +231,8 @@ class Graph:
         return False
 
     def isPlanarGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         node_array = []
         for i in range(1,self.nodes+1):
             node_array.append(i)
@@ -324,6 +363,8 @@ class Graph:
         return int(count/2) 
 
     def isMooreGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         Degree = self.isRegularGraph(False)
 
         if Degree == -1:
@@ -359,6 +400,8 @@ class Graph:
             return False
 
     def isLineGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         occurence = [0]*(self.nodes+1)
 
         edgeSet = set()
@@ -427,6 +470,8 @@ class Graph:
 
 
     def isCubicGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         Degree = self.isRegularGraph(False)
 
         if Degree == 3:
@@ -435,6 +480,8 @@ class Graph:
             return False
 
     def isPaleyGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         result = self.isStronglyRegularGraph(False)
 
         Degree = result[0]
@@ -450,6 +497,8 @@ class Graph:
             return False
 
     def isCubeGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         k = 0
         while 2**k < self.nodes:
             k += 1
@@ -463,6 +512,8 @@ class Graph:
             return False
 
     def isHararyGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         Degree = self.isRegularGraph(False)
 
         if Degree > 1:
@@ -496,6 +547,8 @@ class Graph:
 
 
     def BipartedDFS(self,node,visited,color):
+        if self.checkEdgesFull() == False:
+            return
         for u in self.graphList[node]:
             if visited[u] == False:
                 visited[u] = True
@@ -507,6 +560,8 @@ class Graph:
         return True
 
     def isBipartedGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.isConnectedGraph() == False:
             return False
         visited = [False]*(self.nodes+1)
@@ -519,6 +574,8 @@ class Graph:
             return False
 
     def isCompleteBipartedGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.isConnectedGraph() == False:
             return False
         visited = [False]*(self.nodes+1)
@@ -546,6 +603,8 @@ class Graph:
         
 
     def isCycleGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.isConnectedGraph() == False:
             return False
         if self.nodes != self.edges:
@@ -556,6 +615,8 @@ class Graph:
         return True
 
     def isWheelorStarGraph(self, e):
+        if self.checkEdgesFull() == False:
+            return
         if self.isConnectedGraph() == False:
             return False
         nodeCount = 0
@@ -570,18 +631,26 @@ class Graph:
         return False 
 
     def isWheelGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         return self.isWheelorStarGraph(3) 
 
     def isStarGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         return self.isWheelorStarGraph(1)
 
     def isCompleteGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         for i in range(1,self.nodes+1):
             if len(self.graphList[i]) != self.nodes-1:
                 return False
         return True
 
     def isCyclicGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         return self.isCycle()
           
     def ConnectedDFS(self,visited,node):
@@ -591,6 +660,8 @@ class Graph:
                 self.ConnectedDFS(visited,u)
 
     def isConnectedGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.directed == True:
             return False
         visited = [False]*(self.nodes+1)
@@ -616,6 +687,8 @@ class Graph:
 
 
     def isStronglyConnectedGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.directed == False:
             return False
         stack = []
@@ -642,16 +715,22 @@ class Graph:
         
 
     def isTreeGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.directed == False and self.isCycle() == False and self.isConnectedGraph() == True:
             return True
         return False
 
     def isForestGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.directed == False and self.isCycle() == False:
             return True
         return False
 
     def isRooksGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         Degree = self.isRegularGraph(False)
         if Degree == -1:
             return False
@@ -665,6 +744,8 @@ class Graph:
         return False
 
     def isThresholdGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         DegreeList = []
         for i in range(1, self.nodes+1):
             DegreeList.append(len(self.graphList[i]))
@@ -705,6 +786,8 @@ class Graph:
         return self.graphColoringUtil(m,color,1)
 
     def isMultiPartiteGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         if self.chromaticNumber != 0:
             return True
         low = 2
@@ -730,7 +813,58 @@ class Graph:
         print()
         return True
 
+    def getChromaticNumber(self):
+        if self.checkEdgesFull() == False:
+            return
+        if self.chromaticNumber != 0:
+            return self.chromaticNumber
+        low = 2
+        high = self.nodes
+        m = high
+        FinalColor = [0]*(self.nodes+1)
+        while low<=high:
+            mid = (low+high)//2
+            color = [0]*(self.nodes+1)
+            # print(mid)
+            if self.isKPartiteGraph(mid,color):
+                m = mid
+                # print("in",m)
+                FinalColor = color.copy()
+                high = mid -1
+            else:
+                low = mid + 1
+        self.setChrometicNumber(m)
+        self.setColors(FinalColor)
+        return self.chromaticNumber
+
+    def getColors(self):
+        if self.checkEdgesFull() == False:
+            return
+        if self.chromaticNumber != 0:
+            return self.chromaticNumber
+        low = 2
+        high = self.nodes
+        m = high
+        FinalColor = [0]*(self.nodes+1)
+        while low<=high:
+            mid = (low+high)//2
+            color = [0]*(self.nodes+1)
+            # print(mid)
+            if self.isKPartiteGraph(mid,color):
+                m = mid
+                # print("in",m)
+                FinalColor = color.copy()
+                high = mid -1
+            else:
+                low = mid + 1
+        self.setChrometicNumber(m)
+        self.setColors(FinalColor)
+        return self.Color
+
+
     def isCompleteMultiPartitieGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         self.isMultiPartiteGraph()
         cntColor = [0]*(self.chromaticNumber+1)
         for i in range(1,self.nodes+1):
@@ -747,6 +881,8 @@ class Graph:
         return True
 
     def isKneserGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         self.isMultiPartiteGraph()
         chromaticNumber = self.chromaticNumber
         if chromaticNumber == 1:
@@ -762,6 +898,8 @@ class Graph:
         return False
 
     def isJohnsonGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         Degree = self.isRegularGraph(False)
         if Degree == -1 or Degree*self.nodes != 2*self.edges:
             return False
@@ -779,6 +917,8 @@ class Graph:
         return f(n)/f(r)/f(n-r)
 
     def isHammingGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         Degree = self.isRegularGraph(False)
         if Degree == -1 or Degree*self.nodes != 2*self.edges:
             return False
@@ -814,6 +954,8 @@ class Graph:
         return -1
 
     def isChordalGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         graphList = defaultdict(list)
         for i in self.graphList:
             for j in self.graphList[i]:
@@ -840,6 +982,8 @@ class Graph:
         '''
         Implements Bron-Kerbosch algorithm, Version 2
         '''
+        if len(self.cliques) != 0:
+            return
         Cliques=[]
         Stack=[]
         nd=None
@@ -893,9 +1037,19 @@ class Graph:
                     else:
                         new1_search_node=(c_compsub,c_candidates,c_not,c_nd,c_disc_num)
                         Stack.append(new1_search_node)     
-        return Cliques
+
+        self.cliques = Cliques
+        return
+
+    def getCliques(self):
+        if self.checkEdgesFull() == False:
+            return
+        self.Find_All_Cliques
+        return self.cliques
 
     def isSplitGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         for clique in self.cliques:
             vertices = []
             for i in range(1,self.nodes+1):
@@ -908,6 +1062,8 @@ class Graph:
         return True
 
     def isColorCriticalGraph(self):
+        if self.checkEdgesFull() == False:
+            return
         for i in range(1,self.nodes+1):
             tempGraph = defaultdict(list)
             for u in range(1,self.nodes+1):
@@ -947,15 +1103,15 @@ def run():
     edges = int(input('Enter total number of edges: '))
     graph.setNodes(nodes)
     graph.setEdges(edges)
-
-    for i in range(0,edges):
+    i = 0
+    while i < edges:
         u,v = input('Enter edge nodes u and v: ').split(" ")
         u = int(u)
         v = int(v)
         if u <= 0 or v <= 0 or u > nodes or v > nodes:
             print("Invalid")
-            i = i-1
-            continue     
+            continue
+        i += 1     
         graph.addEdge(u,v)
 
     print('isSimpleGraph : ' , graph.isSimpleGraph(),'\n')
@@ -1000,7 +1156,7 @@ def run():
     print('isLineGraph : ',graph.isLineGraph(),'\n')
 
 
-    graph.cliques = graph.Find_All_Cliques()
+    graph.Find_All_Cliques()
     for clique in graph.cliques:
         print("Maximal clique is :",end=" ")
         print(clique)
@@ -1012,3 +1168,22 @@ def run():
     print("---------DONE------------")
 
 # run()
+
+# graph = Graph()
+# graph.setNodes(4)
+# graph.setEdges(6)
+# print(graph.isCompleteGraph())
+# graph.setNodes(5)
+# graph.setEdges(10)
+# graph.addEdge(1,2)
+# graph.addEdge(1,5)
+# graph.addEdge(2,3)
+# graph.addEdge(3,4)
+# graph.addEdge(4,1)
+# graph.addEdge(1,3)
+# print(graph.isCompleteGraph())
+# graph.addEdge(2,4)
+# print(graph.isCompleteGraph())
+# print(graph.isSimpleGraph())
+# graph.addEdge(1,3)
+# print(graph.isSimpleGraph())
