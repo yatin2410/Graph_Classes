@@ -8,8 +8,11 @@ import sys
 #class Graph
 class Graph:
     
-    def __init__(self,lst=defaultdict(list)):
-        self.graphList = lst
+    def __init__(self,lst=None):
+        if lst == None:
+            self.graphList = defaultdict(list)
+        else:
+            self.graphList = lst
         self.directed = False
         self.nodes = 0
         self.edges = 0
@@ -1044,7 +1047,7 @@ class Graph:
     def getCliques(self):
         if self.checkEdgesFull() == False:
             return
-        self.Find_All_Cliques
+        self.Find_All_Cliques()
         return self.cliques
 
     def isSplitGraph(self):
@@ -1171,7 +1174,7 @@ def run():
 
 # graph = Graph()
 # graph.setNodes(4)
-# graph.setEdges(6)
+# graph.setEdges(6) 
 # print(graph.isCompleteGraph())
 # graph.setNodes(5)
 # graph.setEdges(10)
@@ -1187,3 +1190,14 @@ def run():
 # print(graph.isSimpleGraph())
 # graph.addEdge(1,3)
 # print(graph.isSimpleGraph())
+
+
+# gr = Graph()
+# gr.setNodes(3)
+# gr.setEdges(3)
+# gr.addEdge(1,2)
+# gr.addEdge(2,3)
+# gr.addEdge(3,1)
+# print(gr.graphList)
+# print(gr.getColors())
+# print(gr.getCliques())

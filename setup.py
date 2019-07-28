@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="check_graph",
-    version="1.0.1",
+    version="1.0.2",
     author="Yatin Patel",
     author_email="yatinpatel.gt@gmail.com",
     description="This package is for graph classes recognisation.",
