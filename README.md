@@ -5,6 +5,7 @@ You can use this package for recognition of various graph classes.
 We made python library for graph classes recognition algorithm which takes directed or undirected graph as input and provides recognition of particular graph which mentioned earlier in terms of true or false.
 
 [Click here](https://pypi.org/project/check-graph) to view this project on pypi.org
+[Click here](https://bit.ly/33JDG36) to view PPT
 
 ## Installation
 
